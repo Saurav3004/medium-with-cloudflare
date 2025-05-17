@@ -101,6 +101,28 @@ blogRouter.use('/*',async (c,next) => {
     return c.json(blogs)
  })
 
+ blogRouter.delete('/delete',async (c) => {
+    try {
+        const body = await c.req.json()
+        const prisma = new PrismaClient({
+            datasourceUrl: c.env.DATABASE_URL
+        }).$extends(withAccelerate())
+    
+       const blog = await prisma.blog.delete({
+            where:{
+                id:body.id
+            }
+        })
+        return c.json({
+            msg:"Blog deleted successfully"
+        })
+    } catch (error) {
+        return c.json({
+            msg:"Blog already deleted"
+        })
+    }
+ })
+
 
 // to get specific blog
  blogRouter.get('/:id',async (c) => {
